@@ -19,11 +19,11 @@
       </label>
 
       <nav class="nav-actions" aria-label="Store actions">
-        <button class="icon-button" id="wishlistButton" type="button" title="Wishlist" aria-label="Wishlist">
-          <span aria-hidden="true">♡</span>
+        <button class="wishlist-button" id="wishlistButton" type="button" title="Show saved products">
+          <span>Saved</span>
+          <strong id="wishlistCount">0</strong>
         </button>
         <button class="cart-button" id="cartButton" type="button" title="Open cart">
-          <span aria-hidden="true">🛒</span>
           <span>Cart</span>
           <strong id="cartCount">0</strong>
         </button>
@@ -63,6 +63,15 @@
             <button id="clearFilters" type="button">Reset</button>
           </div>
 
+          <!-- Highlights section for new shoppers -->
+          <div class="highlights" aria-label="Store highlights">
+            <div class="highlight-card">Free shipping over $100</div>
+            <div class="highlight-card">Easy 30-day returns</div>
+            <div class="highlight-card">24/7 support for orders</div>
+          </div>
+
+          <div class="status-message" id="statusMessage" role="status" aria-live="polite"></div>
+
           <div class="product-grid" id="productGrid"></div>
         </section>
       </section>
@@ -71,7 +80,7 @@
     <aside class="cart-panel" id="cartPanel" aria-label="Shopping cart" aria-hidden="true">
       <div class="cart-header">
         <h2>Your Cart</h2>
-        <button class="icon-button" id="closeCart" type="button" title="Close cart" aria-label="Close cart">×</button>
+        <button class="icon-button" id="closeCart" type="button" title="Close cart" aria-label="Close cart">x</button>
       </div>
       <div class="cart-items" id="cartItems"></div>
       <div class="cart-footer">

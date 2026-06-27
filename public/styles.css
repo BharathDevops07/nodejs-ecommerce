@@ -101,6 +101,7 @@ button {
 }
 
 .icon-button,
+.wishlist-button,
 .cart-button,
 .checkout-button,
 .product-card button,
@@ -121,16 +122,32 @@ button {
   font-size: 22px;
 }
 
+.wishlist-button,
 .cart-button {
   display: inline-flex;
   align-items: center;
   gap: 9px;
   height: 42px;
   padding: 0 12px;
+}
+
+.wishlist-button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+.wishlist-button.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.cart-button {
   background: var(--text);
   color: #fff;
 }
 
+.wishlist-button strong,
 .cart-button strong {
   display: grid;
   min-width: 22px;
@@ -265,6 +282,33 @@ select {
   background: #fff;
 }
 
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.highlight-card {
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.status-message {
+  min-height: 24px;
+  margin-bottom: 14px;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.status-message.visible {
+  color: var(--accent);
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -278,13 +322,19 @@ select {
   border-radius: 8px;
 }
 
+.product-card.saved {
+  border-color: var(--accent);
+}
+
 .product-image {
   display: grid;
   min-height: 230px;
   place-items: center;
   padding: 24px;
   background: var(--surface-2);
-  font-size: 64px;
+  color: var(--accent-dark);
+  font-size: 44px;
+  font-weight: 900;
 }
 
 .product-body {
@@ -311,6 +361,13 @@ select {
   gap: 12px;
 }
 
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .price {
   font-size: 20px;
   font-weight: 900;
@@ -323,6 +380,16 @@ select {
   background: var(--accent);
   color: #fff;
   font-weight: 800;
+}
+
+.product-card .save-product {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.product-card .save-product.active {
+  background: var(--text);
+  color: #fff;
 }
 
 .product-card button:hover,
