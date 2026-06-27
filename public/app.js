@@ -1,19 +1,21 @@
 const products = [
-  { id: 1, name: "Transit Daypack", category: "Bags", price: 78, rating: 4.8, icon: "🎒" },
-  { id: 2, name: "Field Jacket", category: "Apparel", price: 132, rating: 4.7, icon: "🧥" },
-  { id: 3, name: "Apex Watch", category: "Accessories", price: 214, rating: 4.9, icon: "⌚" },
-  { id: 4, name: "Canvas Tote", category: "Bags", price: 46, rating: 4.5, icon: "👜" },
-  { id: 5, name: "Ridge Hoodie", category: "Apparel", price: 84, rating: 4.6, icon: "👕" },
-  { id: 6, name: "Trail Bottle", category: "Accessories", price: 32, rating: 4.4, icon: "🥤" },
-  { id: 7, name: "Merino Beanie", category: "Apparel", price: 28, rating: 4.3, icon: "🧢" },
-  { id: 8, name: "Weekend Duffle", category: "Bags", price: 118, rating: 4.8, icon: "🧳" }
+  { id: 1, name: "Transit Daypack", category: "Bags", price: 78, rating: 4.8, code: "B1" },
+  { id: 2, name: "Field Jacket", category: "Apparel", price: 132, rating: 4.7, code: "A1" },
+  { id: 3, name: "Apex Watch", category: "Accessories", price: 214, rating: 4.9, code: "X1" },
+  { id: 4, name: "Canvas Tote", category: "Bags", price: 46, rating: 4.5, code: "B2" },
+  { id: 5, name: "Ridge Hoodie", category: "Apparel", price: 84, rating: 4.6, code: "A2" },
+  { id: 6, name: "Trail Bottle", category: "Accessories", price: 32, rating: 4.4, code: "X2" },
+  { id: 7, name: "Merino Beanie", category: "Apparel", price: 28, rating: 4.3, code: "A3" },
+  { id: 8, name: "Weekend Duffle", category: "Bags", price: 118, rating: 4.8, code: "B3" }
 ];
 
 const state = {
   category: "All",
   search: "",
   sort: "featured",
-  cart: []
+  cart: [],
+  wishlist: [],
+  showWishlistOnly: false
 };
 
 const productGrid = document.querySelector("#productGrid");
@@ -22,6 +24,8 @@ const productCount = document.querySelector("#productCount");
 const searchInput = document.querySelector("#searchInput");
 const sortSelect = document.querySelector("#sortSelect");
 const clearFilters = document.querySelector("#clearFilters");
+const wishlistButton = document.querySelector("#wishlistButton");
+const wishlistCount = document.querySelector("#wishlistCount");
 const cartButton = document.querySelector("#cartButton");
 const closeCart = document.querySelector("#closeCart");
 const cartPanel = document.querySelector("#cartPanel");
@@ -29,6 +33,7 @@ const overlay = document.querySelector("#overlay");
 const cartCount = document.querySelector("#cartCount");
 const cartItems = document.querySelector("#cartItems");
 const cartTotal = document.querySelector("#cartTotal");
+const statusMessage = document.querySelector("#statusMessage");
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -39,11 +44,26 @@ function getCategories() {
   return ["All", ...new Set(products.map((product) => product.category))];
 }
 
+// Show short feedback to the user after cart or checkout actions.
+function showStatus(message) {
+  if (!statusMessage) return;
+
+  statusMessage.textContent = message;
+  statusMessage.classList.add("visible");
+
+  window.clearTimeout(showStatus.timer);
+  showStatus.timer = window.setTimeout(() => {
+    statusMessage.textContent = "";
+    statusMessage.classList.remove("visible");
+  }, 2200);
+}
+
 function getVisibleProducts() {
   const query = state.search.trim().toLowerCase();
 
   return products
     .filter((product) => state.category === "All" || product.category === state.category)
+    .filter((product) => !state.showWishlistOnly || state.wishlist.includes(product.id))
     .filter((product) => product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query))
     .sort((a, b) => {
       if (state.sort === "price-low") return a.price - b.price;
@@ -62,6 +82,11 @@ function renderCategories() {
     .join("");
 }
 
+function renderWishlist() {
+  wishlistCount.textContent = state.wishlist.length;
+  wishlistButton.classList.toggle("active", state.showWishlistOnly);
+}
+
 function renderProducts() {
   const visibleProducts = getVisibleProducts();
   productCount.textContent = `${visibleProducts.length} item${visibleProducts.length === 1 ? "" : "s"}`;
@@ -72,24 +97,31 @@ function renderProducts() {
   }
 
   productGrid.innerHTML = visibleProducts
-    .map(
-      (product) => `
-        <article class="product-card">
-          <div class="product-image" aria-hidden="true">${product.icon}</div>
+    .map((product) => {
+      const saved = state.wishlist.includes(product.id);
+
+      return `
+        <article class="product-card ${saved ? "saved" : ""}">
+          <div class="product-image" aria-hidden="true">${product.code}</div>
           <div class="product-body">
             <div class="product-meta">
               <span>${product.category}</span>
-              <span>${product.rating} ★</span>
+              <span>${product.rating} stars</span>
             </div>
             <h3>${product.name}</h3>
             <div class="product-row">
               <span class="price">${currency.format(product.price)}</span>
-              <button type="button" data-product-id="${product.id}">Add</button>
+              <div class="product-actions">
+                <button class="save-product ${saved ? "active" : ""}" type="button" data-save-id="${product.id}">
+                  ${saved ? "Saved" : "Save"}
+                </button>
+                <button type="button" data-product-id="${product.id}">Add</button>
+              </div>
             </div>
           </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
@@ -110,7 +142,7 @@ function renderCart() {
             <p><strong>${item.name}</strong></p>
             <small>${item.quantity} x ${currency.format(item.price)}</small>
           </div>
-          <button type="button" data-remove-id="${item.id}" aria-label="Remove ${item.name}">×</button>
+          <button type="button" data-remove-id="${item.id}" aria-label="Remove ${item.name}">x</button>
         </div>
       `
     )
@@ -131,11 +163,23 @@ function addToCart(productId) {
   }
 
   renderCart();
+  showStatus(`${product.name} added to cart`);
 }
 
 function removeFromCart(productId) {
   state.cart = state.cart.filter((item) => item.id !== productId);
   renderCart();
+}
+
+function toggleWishlist(productId) {
+  if (state.wishlist.includes(productId)) {
+    state.wishlist = state.wishlist.filter((id) => id !== productId);
+  } else {
+    state.wishlist.push(productId);
+  }
+
+  renderWishlist();
+  renderProducts();
 }
 
 function setCartOpen(isOpen) {
@@ -154,6 +198,12 @@ categoryFilters.addEventListener("click", (event) => {
 });
 
 productGrid.addEventListener("click", (event) => {
+  const saveButton = event.target.closest("[data-save-id]");
+  if (saveButton) {
+    toggleWishlist(Number(saveButton.dataset.saveId));
+    return;
+  }
+
   const button = event.target.closest("[data-product-id]");
   if (!button) return;
 
@@ -181,10 +231,28 @@ clearFilters.addEventListener("click", () => {
   state.category = "All";
   state.search = "";
   state.sort = "featured";
+  state.showWishlistOnly = false;
   searchInput.value = "";
   sortSelect.value = "featured";
   renderCategories();
+  renderWishlist();
   renderProducts();
+});
+
+wishlistButton.addEventListener("click", () => {
+  state.showWishlistOnly = !state.showWishlistOnly;
+  renderWishlist();
+  renderProducts();
+});
+
+const checkoutButton = document.querySelector(".checkout-button");
+checkoutButton.addEventListener("click", () => {
+  if (state.cart.length === 0) {
+    showStatus("Your cart is empty");
+    return;
+  }
+
+  showStatus("Checkout is coming soon");
 });
 
 cartButton.addEventListener("click", () => setCartOpen(true));
@@ -192,5 +260,6 @@ closeCart.addEventListener("click", () => setCartOpen(false));
 overlay.addEventListener("click", () => setCartOpen(false));
 
 renderCategories();
+renderWishlist();
 renderProducts();
 renderCart();
