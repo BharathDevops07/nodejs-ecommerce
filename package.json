@@ -1,0 +1,17 @@
+{
+  "name": "node-ecommerce-frontend",
+  "version": "1.0.0",
+  "description": "A dependency-free Node.js ecommerce frontend app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "ecommerce",
+    "frontend",
+    "docker"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Northline Store</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Northline Store home">
+        <span class="brand-mark">N</span>
+        <span>Northline</span>
+      </a>
+
+      <label class="search">
+        <span class="visually-hidden">Search products</span>
+        <input id="searchInput" type="search" placeholder="Search bags, jackets, watches">
+      </label>
+
+      <nav class="nav-actions" aria-label="Store actions">
+        <button class="icon-button" id="wishlistButton" type="button" title="Wishlist" aria-label="Wishlist">
+          <span aria-hidden="true">♡</span>
+        </button>
+        <button class="cart-button" id="cartButton" type="button" title="Open cart">
+          <span aria-hidden="true">🛒</span>
+          <span>Cart</span>
+          <strong id="cartCount">0</strong>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="store-shell">
+        <aside class="filters" aria-label="Product filters">
+          <div class="filter-header">
+            <h1>Shop</h1>
+            <span id="productCount">0 items</span>
+          </div>
+
+          <div class="filter-group">
+            <h2>Category</h2>
+            <div class="segments" id="categoryFilters"></div>
+          </div>
+
+          <div class="filter-group">
+            <h2>Sort</h2>
+            <select id="sortSelect" aria-label="Sort products">
+              <option value="featured">Featured</option>
+              <option value="price-low">Price: low to high</option>
+              <option value="price-high">Price: high to low</option>
+              <option value="rating">Top rated</option>
+            </select>
+          </div>
+        </aside>
+
+        <section class="catalog" aria-label="Product catalog">
+          <div class="promo">
+            <div>
+              <p>Weekend edit</p>
+              <h2>Everyday gear with clean utility.</h2>
+            </div>
+            <button id="clearFilters" type="button">Reset</button>
+          </div>
+
+          <div class="product-grid" id="productGrid"></div>
+        </section>
+      </section>
+    </main>
+
+    <aside class="cart-panel" id="cartPanel" aria-label="Shopping cart" aria-hidden="true">
+      <div class="cart-header">
+        <h2>Your Cart</h2>
+        <button class="icon-button" id="closeCart" type="button" title="Close cart" aria-label="Close cart">×</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-footer">
+        <div>
+          <span>Total</span>
+          <strong id="cartTotal">$0.00</strong>
+        </div>
+        <button class="checkout-button" type="button">Checkout</button>
+      </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
